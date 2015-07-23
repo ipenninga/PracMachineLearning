@@ -1,3 +1,7 @@
+```{r echo=FALSE}
+
+
+```
 ---
 title: "Practical Machine Learning"
 author: "Ietje Penninga"
@@ -33,12 +37,15 @@ The OOB can be seen to converge after about 35 trees.
 Therefore the RandomForest fit was set to use 35 trees.
 
 OOB error was estimated to be 1 % 
-SHOW. 
 
+```{r echo=FALSE}
+modFitRfALLNZV<-randomForest(trainingCleanNAnzv[,c(2,7:58)],trainingCleanNAnzv[,59],ntree=35,do.trace=TRUE)
+```
 A special error can be expected if we were to predict the class for a new user, an atlethe we did not train on. 
 
-I have simulated this by separating the test into a random sumbsample, and a leave one out atlethe sample. 
-The accuracy of the prediction dropped from : xxx to xxx.
+I have simulated this by separating the test into a random sumbsample of 5/6 of the original test set, and a leave one out atlethe sample (in this case Carlitos). 
+The accuracy of the prediction dropped to 99,5% for the random sample, and to 52% for predicting for user Carlitos when trained on the other 5 atlethes. 
+
 
 
 
