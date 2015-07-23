@@ -4,7 +4,7 @@ author: "Ietje Penninga"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{Practical Machine Learning}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -21,23 +21,28 @@ The training set consists of a number of measurements and a classification.
 Upon first analysis of the data it appears that the first 6 columns contain information about the atlethe and time and date of the measeurement. Of the other variables, there are some variables that generate a NA measurement in about 90% of the cases. These variables were therefore considered unsuitable to build the model on, and were not used in subsequent modelling. 
 
 After this reduction of variables an analysis was performed on the variability of the variables. 
- The `html_vignette` format:
+ 
+- Using NZV()
+- variables with a near zero variability were dropped. 
 
-- Never uses retina figures
-- Has a smaller default figure size
-- Uses a custom CSS stylesheet instead of the default Twitter Bootstrap style
+A Random Forest calculation was performed on all remaining variables. 
 
-## Vignette Info
+## Cross validation error
+Random Forest algorithm estimates the internal error, by calculating the Out Of Bag error. 
+The OOB can be seen to converge after about 35 trees. 
+Therefore the RandomForest fit was set to use 35 trees.
 
-Note the various macros within the `vignette` section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette.
+OOB error was estimated to be 1 % 
+SHOW. 
 
-## Styles
+A special error can be expected if we were to predict the class for a new user, an atlethe we did not train on. 
 
-The `html_vignette` template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows:
+I have simulated this by separating the test into a random sumbsample, and a leave one out atlethe sample. 
+The accuracy of the prediction dropped from : xxx to xxx.
 
-    output: 
-      rmarkdown::html_vignette:
-        css: mystyles.css
+
+
+
 
 ## Figures
 
