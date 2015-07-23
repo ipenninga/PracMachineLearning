@@ -3,7 +3,7 @@
 
 # Read more: http://groupware.les.inf.puc-rio.br/har#ixzz3gbvAGgXX
 
-training<-read.csv(url("https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv"))
+training<-read.csv("pml-training.csv")
 
 # head(training)
 # summary(training)
@@ -24,7 +24,7 @@ table(is.na(training$stddev_yaw_forearm),training$classe)
 b<-colSums(a)
 
 
-library(caret); library(kernlab);library(randomForest)
+library(caret); library(kernlab);
 trainingCleanNA<-training[,b<1]
 nsv<-nearZeroVar(trainingCleanNA,saveMetrics=TRUE)
 trainingCleanNAnzv<-trainingCleanNA[,nsv$nzv==FALSE]

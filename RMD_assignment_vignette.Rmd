@@ -1,5 +1,5 @@
-```{r echo=FALSE}
-
+```{r cache=TRUE}
+{source("ass.R")}
 
 ```
 ---
@@ -15,39 +15,41 @@ vignette: >
 
 For Machine Learning class a dataset was obtained by:  `http://groupware.les.inf.puc-rio.br/har#ixzz3gbvAGgXX`. 
 
-Their article on machine learning is available: 
-
+Reference: 
 Velloso, E.; Bulling, A.; Gellersen, H.; Ugulino, W.; Fuks, H. Qualitative Activity Recognition of Weight Lifting Exercises. Proceedings of 4th International Conference in Cooperation with SIGCHI (Augmented Human '13) . Stuttgart, Germany: ACM SIGCHI, 2013.
 
 The data contains a set of measurements on 6 atlethes that perform a series of weight lifting exercises. The way they perform the exercise is classified by an expert as A (= correct) , or as B:E (=various errors). Task is to determine based on the variables measured how the exercise is executed: A,B,C,D or E. 
 
 The training set consists of a number of measurements and a classification. 
-Upon first analysis of the data it appears that the first 6 columns contain information about the atlethe and time and date of the measeurement. Of the other variables, there are some variables that generate a NA measurement in about 90% of the cases. These variables were therefore considered unsuitable to build the model on, and were not used in subsequent modelling. 
-
-After this reduction of variables an analysis was performed on the variability of the variables. 
+Upon first analysis of the data it appears that the first 6 columns contain information about the atlethe and time and date of the measeurement. Of the other variables, there are some variables that generate a NA measurement in about 90% of the cases.I checked if the NA's can be used to predict class A through E. But as you can see in this table the measurements with NA 's (TRUE) are distributed equally among the classes.
+```{r echo=FALSE}
+table(is.na(training$stddev_yaw_forearm),training$classe)
+```
+ The variables with 90% NA's were therefore considered unsuitable to build the model on, and were not used in subsequent modelling. 
  
-- Using NZV()
-- variables with a near zero variability were dropped. 
+After this reduction of variables an analysis was performed on the variability of the variables using function nearZeroVar(). The variables with a near zero variability were dropped. 
 
-A Random Forest calculation was performed on all remaining variables. 
+Then a Random Forest calculation was performed on all remaining variables. 
 
 ## Cross validation error
-Random Forest algorithm estimates the internal error, by calculating the Out Of Bag error. 
+Random Forest algorithm estimates the internal error, by calculating the Out Of Bag error(OOB). 
 The OOB can be seen to converge after about 35 trees. 
 Therefore the RandomForest fit was set to use 35 trees.
 
-OOB error was estimated to be 1 % 
+OOB error was estimated to well below 1 % 
 
 ```{r echo=FALSE}
+library(randomForest)
 modFitRfALLNZV<-randomForest(trainingCleanNAnzv[,c(2,7:58)],trainingCleanNAnzv[,59],ntree=35,do.trace=TRUE)
 ```
-A special error can be expected if we were to predict the class for a new user, an atlethe we did not train on. 
+I expect the out of sample error to be comparable if the same users and movements are made. However the out of sample error can be substantially bigger for a new athlete. 
 
-I have simulated this by separating the test into a random sumbsample of 5/6 of the original test set, and a leave one out atlethe sample (in this case Carlitos). 
-The accuracy of the prediction dropped to 99,5% for the random sample, and to 52% for predicting for user Carlitos when trained on the other 5 atlethes. 
+A special form of cross validation can be done by predicting for an unknown athlete. Then a larger error can be expected if we were to predict the class for a new user, an atlethe we did not train on. 
 
+I have simulated this by separating the test into a random sumbsample of 5/6 of the original test set, and a leave one atlethe out sample (in this case Carlitos). 
+The accuracy of the prediction dropped initially, but this could be resolved by using more trees, and was 99,5% for the random sample. However the prediction accuracy for the unknown atlethe dropped to 52%. Remember I trained on 5 atletes and predicted for the 6th one. 
 
-
+Therefore one may conclude it will be difficult to apply this prediction to new 'unknown' athletes.
 
 
 
@@ -55,7 +57,7 @@ The accuracy of the prediction dropped to 99,5% for the random sample, and to 52
 
 The figure sizes have been customised so that you can easily put two images side-by-side. 
 
-```{r, fig.show='hold'}
+```{r, fig.show='hold', echo=FALSE}
 plot(1:10)
 plot(10:1)
 ```
@@ -68,15 +70,3 @@ You can enable figure captions by `fig_caption: yes` in YAML:
 
 Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**.
 
-## More Examples
-
-You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`.
-
-```{r, echo=FALSE, results='asis'}
-knitr::kable(head(mtcars, 10))
-```
-
-Also a quote using `>`:
-
-> "He who gives up [code] safety for [code] speed deserves neither."
-([via](https://twitter.com/hadleywickham/status/504368538874703872))
