@@ -63,12 +63,16 @@ I expect the out of sample error to be comparable if the same users and movement
 A special form of cross validation can be done by predicting for an unknown athlete. Then a larger error can be expected if we were to predict the class for a new user, an atlethe we did not train on. 
 
 I have simulated this by separating the test into a random sumbsample of 5/6 of the original test set, and a leave one atlethe out sample (in this case Carlitos). 
-The accuracy of the prediction (OOB) dropped initially, but this could be resolved by using more trees, and was 99,5% for the random sample. However the prediction accuracy for the unknown atlethe dropped to around 50%. Remember I trained on 5 atletes and predicted for the 6th one. 
+The accuracy of the prediction (OOB) dropped initially, but this could be resolved by using more trees, and was 99,5% for the random sample. However the prediction accuracy for the unknown atlethe dropped to around 50%. Remember I trained on 5 atletes and predicted for the 6th. 
 
 ```{r }
-{userTrain<-trainingCleanNAnzv[trainingCleanNAnzv$user_name!="carlitos",]
+{# train on everybody except Carlitos
+userTrain<-trainingCleanNAnzv[trainingCleanNAnzv$user_name!="carlitos",]
+# test on Carlitos
 userTest<-trainingCleanNAnzv[trainingCleanNAnzv$user_name=="carlitos",]
+# Fit on other users
 modFitUser<-randomForest(userTrain[,c(2,7:58)],userTrain[,59],ntree=45,do.trace=FALSE)
+# predict Carlitos and compare to actual classe
 userPredict<-predict(modFitUser,newdata=userTest)
 confusionMatrix(userPredict,userTest$classe)
 }
